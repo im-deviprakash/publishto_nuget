@@ -1,4 +1,4 @@
-name: 'Publish to NuGet'
+name: Publish to NuGet
 description: 'Builds a .NET library and publishes it to NuGet'
 inputs:
   nuget_api_key:
@@ -7,10 +7,14 @@ inputs:
   dotnet_version:
     description: 'Version of .NET to use'
     required: false
-    default: '8.0.x'
+    default: '8.0'
+  projfile_location:
+    description: 'Path of the project file'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.nuget_api_key }}
     - ${{ inputs.dotnet_version }}
+    - ${{ inputs.projfile_location }}

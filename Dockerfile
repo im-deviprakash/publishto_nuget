@@ -3,9 +3,9 @@ FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
 
 WORKDIR /app
 
-COPY . .
-
 ARG NUGET_API_KEY
+ARG PROJ_FILE_LOCATION
+COPY ${PROJ_FILE_LOCATION} .
 
 # Debugging: Print .NET version and environment variables
 RUN dotnet --version
