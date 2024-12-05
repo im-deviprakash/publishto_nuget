@@ -8,7 +8,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y git
 
 # Copy the repository into the container (GitHub Actions will check out the user's repo into /github/workspace)
-COPY . .
+RUN dotnet restore **/*.csproj
 
 # Restore dependencies (restore all projects in the repository)
 RUN dotnet restore
