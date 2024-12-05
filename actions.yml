@@ -1,20 +1,20 @@
-name: Publish to NuGet
-description: 'Builds a .NET library and publishes it to NuGet'
+name: 'NuGet Publisher'
+description: 'Builds and publishes a .NET library to NuGet.org.'
+author: 'Your Name'
+
 inputs:
   nuget_api_key:
-    description: 'NuGet API Key'
+    description: 'API key for NuGet.org'
     required: true
-  dotnet_version:
-    description: 'Version of .NET to use'
+  nuget_source:
+    description: 'NuGet source URL (default: https://api.nuget.org/v3/index.json)'
     required: false
-    default: '8.0'
-  projfile_location:
-    description: 'Path of the project file'
-    required: true
+    default: 'https://api.nuget.org/v3/index.json'
+
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'Dockerfile'  # Dockerfile from your action repository
   args:
+    - ${{ github.workspace }}   # This is where the user's repository will be checked out
     - ${{ inputs.nuget_api_key }}
-    - ${{ inputs.dotnet_version }}
-    - ${{ inputs.projfile_location }}
+    - ${{ inputs.nuget_source }}
