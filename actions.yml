@@ -1,21 +1,28 @@
-# Use .NET SDK 8.0 image as the base
-FROM mcr.microsoft.com/dotnet/sdk:8.0
+name: 'NuGet Publisher'
+description: 'Builds and publishes a .NET library to NuGet.org.'
+author: 'Your Name'
 
-# Set working directory inside the container
-WORKDIR /app
+inputs:
+  nuget_api_key:
+    description: 'API key for NuGet.org'
+    required: true
+  nuget_source:
+    description: 'NuGet source URL (default: https://api.nuget.org/v3/index.json)'
+    required: false
+    default: 'https://api.nuget.org/v3/index.json'
+  repo_url:
+    description: 'URL of the GitHub repository to clone'
+    required: true
 
-# Install Git (only if needed for additional repositories, not for checking out the main repo)
-RUN apt-get update && apt-get install -y git
+runs:
+  using: 'docker'
+  image: 'mcr.microsoft.com/dotnet/sdk:8.0'  # Reference to .NET SDK image or your custom Docker image
+  args:
+    - '/github/workspace'  # Path to the workspace containing the user's repo
+    - ${{ inputs.nuget_api_key }}  # API key for NuGet
+    - ${{ inputs.nuget_source }}  # NuGet source URL (optional)
+    - ${{ inputs.repo_url }}  # Repository URL to clone
 
-# Copy files from the GitHub workspace into the Docker container
-COPY /github/workspace .
-
-# Restore dependencies for all .csproj files
-RUN dotnet restore **/*.csproj
-
-# Build and pack all .NET projects into .nupkg files
-RUN dotnet build --configuration Release **/*.csproj
-RUN dotnet pack --configuration Release **/*.csproj -o /output
-
-# Push the .nupkg files to NuGet
-CMD ["sh", "-c", "dotnet nuget push /output/*.nupkg --api-key $INPUT_NUGET_API_KEY --source $INPUT_NUGET_SOURCE --skip-duplicate"]
+env:
+  INPUT_NUGET_API_KEY: ${{ inputs.nuget_api_key }}  # Set the API key as environment variable
+  INPUT_NUGET_SOURCE: ${{ inputs.nuget_source }}  # Set the NuGet source as environment variable
