@@ -1,24 +1,20 @@
-name: "Publish .NET Package to NuGet with Docker"
-description: "A GitHub Action that builds, packages, and publishes a .NET project to NuGet using Docker."
-author: "YourName"
-
+name: Publish to NuGet
+description: 'Builds a .NET library and publishes it to NuGet'
 inputs:
-  NUGET_API_KEY:
-    description: "NuGet API key to publish the package"
+  nuget_api_key:
+    description: 'NuGet API Key'
     required: true
-  PROJECT_PATH:
-    description: "Path to the .csproj file of the .NET project"
+  dotnet_version:
+    description: 'Version of .NET to use'
     required: false
-    default: "./"
-  VERSION:
-    description: "Version of the package. If not provided, the version from the .csproj file will be used"
-    required: false
-    default: ""
-
+    default: '8.0'
+  projfile_location:
+    description: 'Path of the project file'
+    required: true
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  env:
-    NUGET_API_KEY: "${{ inputs.NUGET_API_KEY }}"
-    PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
-    VERSION: "${{ inputs.VERSION }}"
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.nuget_api_key }}
+    - ${{ inputs.dotnet_version }}
+    - ${{ inputs.projfile_location }}
