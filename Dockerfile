@@ -7,8 +7,10 @@ WORKDIR /app
 # Install Git (needed for cloning repositories)
 RUN apt-get update && apt-get install -y git
 
-# Clone the user's repository into the container (replace with actual repository URL)
+# ARG for repository URL
 ARG REPO_URL
+
+# Clone the user's repository into the container
 RUN git clone ${REPO_URL} /app/repo
 
 # Set working directory to the cloned repo

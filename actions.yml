@@ -1,28 +1,23 @@
-name: 'NuGet Publisher'
-description: 'Builds and publishes a .NET library to NuGet.org.'
-author: 'Your Name'
+name: Publish NuGet Package
+
+description: 'A reusable action to build and publish a .NET library to NuGet.'
 
 inputs:
+  repo_url:
+    description: 'The URL of the repository to clone and publish from.'
+    required: true
   nuget_api_key:
-    description: 'API key for NuGet.org'
+    description: 'NuGet API key for pushing the package.'
     required: true
   nuget_source:
-    description: 'NuGet source URL (default: https://api.nuget.org/v3/index.json)'
+    description: 'NuGet source URL (default: https://api.nuget.org/v3/index.json).'
     required: false
     default: 'https://api.nuget.org/v3/index.json'
-  repo_url:
-    description: 'URL of the GitHub repository to clone'
-    required: true
 
 runs:
   using: 'docker'
-  image: 'mcr.microsoft.com/dotnet/sdk:8.0'  # Reference to .NET SDK image or your custom Docker image
+  image: 'Dockerfile'  # Your Dockerfile for the action
   args:
-    - '/github/workspace'  # Path to the workspace containing the user's repo
-    - ${{ inputs.nuget_api_key }}  # API key for NuGet
-    - ${{ inputs.nuget_source }}  # NuGet source URL (optional)
-    - ${{ inputs.repo_url }}  # Repository URL to clone
-
-env:
-  INPUT_NUGET_API_KEY: ${{ inputs.nuget_api_key }}  # Set the API key as environment variable
-  INPUT_NUGET_SOURCE: ${{ inputs.nuget_source }}  # Set the NuGet source as environment variable
+    - ${{ inputs.repo_url }}  # User's repo URL to clone
+    - ${{ inputs.nuget_api_key }}
+    - ${{ inputs.nuget_source }}
